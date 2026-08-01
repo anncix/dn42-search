@@ -181,9 +181,29 @@ class Ranker:
         
         explanation['total_bm25'] = round(total_bm25, 4)
         explanation['pagerank'] = doc_info.get('pagerank', 0)
+        
+        # 使用全局最大值归一化（与 rank() 方法一致）
+        # 获取所有匹配文档的 BM25 得分
+        all_bm25_scores = dict(self.bm25_scorer.score_all_matches(query_terms))
+        max_bm25 = max(all_bm25_scores.values()) if all_bm25_scores else 1
+        if max_bm25 == 0:
+            max_bm25 = 1
+        
+        # 获取所有匹配文档的最大 PageRank
+        max_pr = 0
+        for d_id in all_bm25_scores:
+            info = self.index.get_doc_info(d_id)
+            if info:
+                max_pr = max(max_pr, info.get('pagerank', 0))
+        if max_pr == 0:
+            max_pr = 1
+        
+        bm25_norm = total_bm25 / max_bm25
+        pr_norm = explanation['pagerank'] / max_pr
+        
         explanation['final_score'] = round(
-            self.bm25_weight * (total_bm25 / max(total_bm25, 1)) + 
-            self.pagerank_weight * (explanation['pagerank'] / max(explanation['pagerank'], 1)),
+            self.bm25_weight * bm25_norm + 
+            self.pagerank_weight * pr_norm,
             4
         )
         

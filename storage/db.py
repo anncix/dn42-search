@@ -65,6 +65,18 @@ class Database:
                     updated_at REAL
                 )
             ''')
+
+            # 兼容旧数据库：如果缺少新列则自动添加
+            c.execute("PRAGMA table_info(pages)")
+            existing_cols = {row['name'] for row in c.fetchall()}
+            new_cols = {
+                'text': 'TEXT',
+                'headings': 'TEXT',
+                'meta_description': 'TEXT',
+            }
+            for col_name, col_type in new_cols.items():
+                if col_name not in existing_cols:
+                    c.execute(f'ALTER TABLE pages ADD COLUMN {col_name} {col_type}')
             
             # URL 队列表
             c.execute('''
@@ -241,8 +253,9 @@ class Database:
                 INSERT OR REPLACE INTO pages 
                 (url, doc_id, domain, title, content_hash, content_length,
                  content_type, status_code, depth, last_crawled_at, 
-                 last_modified, etag, created_at, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
+                 last_modified, etag, text, headings, meta_description,
+                 created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
                         COALESCE((SELECT created_at FROM pages WHERE url = ?), ?), ?)
             ''', (
                 url, doc_id, domain,
@@ -255,6 +268,9 @@ class Database:
                 now,
                 page_data.get('last_modified', ''),
                 page_data.get('etag', ''),
+                page_data.get('text', ''),
+                page_data.get('headings', ''),
+                page_data.get('meta_description', ''),
                 url, now, now
             ))
     

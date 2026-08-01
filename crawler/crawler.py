@@ -348,11 +348,12 @@ class Crawler:
             await self._close_session()
         
         elapsed = time.time() - self._stats['start_time']
+        avg_rate = self._stats['pages_crawled'] / elapsed if elapsed > 0 else 0
         logger.info(
             f"爬取结束。共抓取 {self._stats['pages_crawled']} 个页面，"
             f"失败 {self._stats['pages_failed']} 个，"
             f"耗时 {elapsed:.2f} 秒，"
-            f"平均速率 {self._stats['pages_crawled'] / elapsed:.2f} pages/s"
+            f"平均速率 {avg_rate:.2f} pages/s"
         )
         
         return self._stats

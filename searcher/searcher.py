@@ -175,19 +175,29 @@ class SearchEngine:
         return result
     
     def _count_matches(self, terms):
-        """估算匹配文档数"""
+        """
+        计算匹配文档数（AND 语义：所有词项都必须出现）
+        
+        通过计算所有词项倒排列表的交集来得到准确匹配数。
+        """
         if not terms:
             return 0
         
-        # 取最小的倒排列表长度作为近似
-        min_df = float('inf')
+        # 获取所有词项的倒排列表文档 ID 集合
+        postings_sets = []
         for term in terms:
-            df = self.index.doc_frequency(term)
-            if df == 0:
+            postings = self.index.get_postings(term)
+            if not postings:
+                # 任一词项不存在匹配文档，AND 结果为空
                 return 0
-            min_df = min(min_df, df)
+            postings_sets.append(set(postings.keys()))
         
-        return min_df if min_df != float('inf') else 0
+        # 计算交集（所有词项都出现的文档）
+        result_set = postings_sets[0]
+        for s in postings_sets[1:]:
+            result_set = result_set & s
+        
+        return len(result_set)
     
     def _generate_snippet(self, doc_info, query_terms):
         """

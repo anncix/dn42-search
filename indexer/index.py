@@ -25,6 +25,9 @@ class InvertedIndex:
     - 文档元数据: doc_id -> (url, title, length, pagerank)
     """
     
+    # 每个词项在每个文档中最多保存的位置信息数量
+    MAX_POSITIONS = 100
+    
     def __init__(self, index_path=None):
         self.config = INDEX_CONFIG
         self.index_path = index_path or self.config['index_path']
@@ -83,14 +86,14 @@ class InvertedIndex:
                         'fields': set(),
                     }
                 doc_terms[token]['freq'] += weight
-                doc_terms[token]['positions'].append(int(pos * weight))
+                doc_terms[token]['positions'].append(pos)
                 doc_terms[token]['fields'].add(field_name)
         
         # 添加到倒排索引
         for term, info in doc_terms.items():
             self._postings[term][doc_id] = {
                 'freq': info['freq'],
-                'positions': info['positions'][:100],  # 限制位置信息数量
+                'positions': info['positions'][:self.MAX_POSITIONS],
                 'fields': info['fields'],
             }
         
@@ -277,7 +280,7 @@ class InvertedIndex:
         
         格式：
         [doc_count: varint]
-        [doc_id_len: varint][doc_id: bytes][freq: varint][pos_count: varint][positions: varint...]
+        [doc_id_len: varint][doc_id: bytes][freq: varint][field_count: varint][fields...][pos_count: varint][positions: varint...]
         ...
         """
         data = bytearray()
@@ -286,9 +289,6 @@ class InvertedIndex:
         self._encode_varint(data, len(postings))
         
         # 按 doc_id 排序（便于差值编码）
-        sorted_docs = sorted(postings.items(), key=lambda x: x[0])
-        
-        prev_doc_id_num = 0
         for doc_id, info in sorted(postings.items(), key=lambda x: x[0]):
             # doc_id（字符串长度 + 内容）
             doc_id_bytes = doc_id.encode('utf-8')
@@ -299,13 +299,21 @@ class InvertedIndex:
             freq = int(info['freq'] * 10)  # 乘以 10 保留一位小数
             self._encode_varint(data, freq)
             
-            # 位置信息
-            positions = info.get('positions', [])
+            # 字段信息
+            fields = sorted(info.get('fields', set()))
+            self._encode_varint(data, len(fields))
+            for field_name in fields:
+                field_bytes = field_name.encode('utf-8')
+                self._encode_varint(data, len(field_bytes))
+                data.extend(field_bytes)
+            
+            # 位置信息 - 截断到 MAX_POSITIONS，pos_count 必须与实际编码数量一致
+            positions = info.get('positions', [])[:self.MAX_POSITIONS]
             self._encode_varint(data, len(positions))
             
             # 位置差值编码
             prev_pos = 0
-            for pos in positions[:20]:  # 限制位置数量
+            for pos in positions:
                 self._encode_varint(data, pos - prev_pos)
                 prev_pos = pos
         
@@ -329,6 +337,15 @@ class InvertedIndex:
             freq, pos = self._decode_varint(data, pos)
             freq = freq / 10.0  # 还原小数
             
+            # 字段信息
+            field_count, pos = self._decode_varint(data, pos)
+            fields = set()
+            for _ in range(field_count):
+                field_len, pos = self._decode_varint(data, pos)
+                field_name = data[pos:pos+field_len].decode('utf-8')
+                pos += field_len
+                fields.add(field_name)
+            
             # 位置数量
             pos_count, pos = self._decode_varint(data, pos)
             
@@ -343,7 +360,7 @@ class InvertedIndex:
             postings[doc_id] = {
                 'freq': freq,
                 'positions': positions,
-                'fields': set(),
+                'fields': fields,
             }
         
         return postings

@@ -82,28 +82,47 @@ class URLFrontier:
         """
         获取下一个可爬取的 URL
         考虑礼貌性延迟和每主机并发限制
+        
+        当某个主机被礼貌性延迟阻塞时，继续检查堆中其他主机的 URL，
+        而不是直接放弃整个堆。
         """
         now = time.time()
         
         # 先尝试从内存堆中获取
+        blocked_urls = []       # 暂存被阻塞的 URL
+        checked_hosts = set()   # 已检查且被阻塞的主机（避免重复检查）
+        
         with self._heap_lock:
             while self._heap:
                 priority, ts, url, depth = heappop(self._heap)
                 
-                # 检查是否可以爬取（礼貌性 + 并发限制）
                 host = get_domain(url)
+                
+                # 如果该主机已被检查且被阻塞，直接暂存，跳过重复检查
+                if host in checked_hosts:
+                    blocked_urls.append((priority, ts, url, depth))
+                    continue
+                
+                # 检查是否可以爬取（礼貌性 + 并发限制）
                 if self._can_crawl_host(host, now):
                     self._mark_host_start(host)
                     self._stats['fetched'] += 1
+                    # 将之前被阻塞的 URL 放回堆中
+                    for item in blocked_urls:
+                        heappush(self._heap, item)
                     return {
                         'url': url,
                         'depth': depth,
                         'priority': priority,
                     }
                 else:
-                    # 暂时不能爬取，放回去（延迟处理）
-                    heappush(self._heap, (priority, ts, url, depth))
-                    break
+                    # 暂时不能爬取，标记该主机为已阻塞，暂存 URL，继续检查其他主机
+                    checked_hosts.add(host)
+                    blocked_urls.append((priority, ts, url, depth))
+            
+            # 堆中所有 URL 都被阻塞，将它们放回堆中
+            for item in blocked_urls:
+                heappush(self._heap, item)
         
         # 内存堆中没有可用的，从数据库获取
         result = self.db.get_next_url()
