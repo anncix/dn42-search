@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ query }} - DN42 Search</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="results-page">
+    <header class="results-header">
+        <div class="header-inner">
+            <a href="/" class="mini-logo">
+                <span class="logo-dn42">DN42</span><span class="logo-search">Search</span>
+            </a>
+            
+            <form action="/search" method="get" class="mini-search-form">
+                <div class="mini-search-box">
+                    <input type="text" name="q" class="search-input" 
+                           value="{{ query }}" autocomplete="off">
+                    <button type="submit" class="search-btn-small">
+                        <svg viewBox="0 0 24 24" width="18" height="18">
+                            <path fill="currentColor" d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+            
+            <nav class="header-nav">
+                <a href="/about">关于</a>
+                <a href="/stats">统计</a>
+            </nav>
+        </div>
+    </header>
+    
+    <main class="results-main">
+        <div class="results-container">
+            {% if suggestion and original_query != query %}
+            <div class="spell-suggestion">
+                您是不是要找：<a href="/search?q={{ suggestion | urlencode }}">{{ suggestion | safe }}</a>
+                <span class="original-query">（搜索了 {{ original_query }}）</span>
+            </div>
+            {% endif %}
+            
+            <div class="results-stats">
+                找到约 <strong>{{ total }}</strong> 条结果（用时 {{ time_ms }} 毫秒）
+            </div>
+            
+            <div class="sort-options">
+                <span>排序方式：</span>
+                <a href="/search?q={{ query | urlencode }}&mode=hybrid" 
+                   class="{% if mode == 'hybrid' %}active{% endif %}">综合</a>
+                <a href="/search?q={{ query | urlencode }}&mode=relevance"
+                   class="{% if mode == 'relevance' %}active{% endif %}">相关性</a>
+                <a href="/search?q={{ query | urlencode }}&mode=authority"
+                   class="{% if mode == 'authority' %}active{% endif %}">权威度</a>
+            </div>
+            
+            <div class="search-results">
+                {% for result in results %}
+                <div class="result-item">
+                    <h3 class="result-title">
+                        <a href="{{ result.url }}" target="_blank">{{ result.title | safe }}</a>
+                    </h3>
+                    <div class="result-url">{{ result.url }}</div>
+                    <div class="result-snippet">{{ result.snippet | safe }}</div>
+                    <div class="result-meta">
+                        <span class="score-badge" title="综合得分">
+                            得分: {{ "%.4f"|format(result.score.final) }}
+                        </span>
+                        <span class="pagerank-badge" title="PageRank">
+                            PR: {{ "%.6f"|format(result.score.pagerank) }}
+                        </span>
+                    </div>
+                </div>
+                {% else %}
+                <div class="no-results">
+                    <h3>未找到相关结果</h3>
+                    <p>试试其他关键词，或者检查拼写是否正确。</p>
+                    <ul>
+                        <li>确保所有单词拼写正确</li>
+                        <li>尝试不同的关键词</li>
+                        <li>尝试更通用的关键词</li>
+                    </ul>
+                </div>
+                {% endfor %}
+            </div>
+            
+            {% if total > page_size %}
+            <div class="pagination">
+                {% set total_pages = (total + page_size - 1) // page_size %}
+                {% set max_visible = 10 %}
+                {% set start = [1, page - 4] | max %}
+                {% set end = [total_pages, start + max_visible - 1] | min %}
+                
+                {% if page > 1 %}
+                <a href="/search?q={{ query | urlencode }}&page={{ page - 1 }}&mode={{ mode }}" class="page-link">上一页</a>
+                {% endif %}
+                
+                {% if start > 1 %}
+                <a href="/search?q={{ query | urlencode }}&page=1&mode={{ mode }}" class="page-link">1</a>
+                {% if start > 2 %}
+                <span class="page-ellipsis">...</span>
+                {% endif %}
+                {% endif %}
+                
+                {% for p in range(start, end + 1) %}
+                <a href="/search?q={{ query | urlencode }}&page={{ p }}&mode={{ mode }}" 
+                   class="page-link {% if p == page %}active{% endif %}">{{ p }}</a>
+                {% endfor %}
+                
+                {% if end < total_pages %}
+                {% if end < total_pages - 1 %}
+                <span class="page-ellipsis">...</span>
+                {% endif %}
+                <a href="/search?q={{ query | urlencode }}&page={{ total_pages }}&mode={{ mode }}" class="page-link">{{ total_pages }}</a>
+                {% endif %}
+                
+                {% if page < total_pages %}
+                <a href="/search?q={{ query | urlencode }}&page={{ page + 1 }}&mode={{ mode }}" class="page-link">下一页</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </main>
+    
+    <footer class="results-footer">
+        <p>DN42 Search Engine · 为去中心化网络而生</p>
+    </footer>
+    
+    <script src="{{ url_for('static', filename='js/search.js') }}"></script>
+</body>
+</html>

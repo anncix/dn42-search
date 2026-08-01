@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DN42 Search - 去中心化网络搜索引擎</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="home-page">
+    <div class="container home-container">
+        <div class="logo-section">
+            <h1 class="logo">
+                <span class="logo-dn42">DN42</span>
+                <span class="logo-search">Search</span>
+            </h1>
+            <p class="tagline">去中心化网络搜索引擎</p>
+        </div>
+        
+        <div class="search-section">
+            <form action="/search" method="get" class="search-form">
+                <div class="search-box">
+                    <input type="text" name="q" class="search-input" 
+                           placeholder="搜索 dn42 网络中的网页..." 
+                           autofocus autocomplete="off">
+                    <button type="submit" class="search-btn">
+                        <svg viewBox="0 0 24 24" width="20" height="20">
+                            <path fill="currentColor" d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                        搜索
+                    </button>
+                </div>
+            </form>
+            
+            <div class="quick-links">
+                <span class="quick-label">热门：</span>
+                <a href="/search?q=wiki">Wiki</a>
+                <a href="/search?q=BGP">BGP</a>
+                <a href="/search?q=WireGuard">WireGuard</a>
+                <a href="/search?q=registry">Registry</a>
+                <a href="/search?q=DN42">DN42</a>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="footer-links">
+                <a href="/about">关于</a>
+                <a href="/stats">统计</a>
+                <a href="https://wiki.dn42/" target="_blank">DN42 Wiki</a>
+            </div>
+            <p class="copyright">DN42 Search Engine · 为去中心化网络而生</p>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/search.js') }}"></script>
+</body>
+</html>

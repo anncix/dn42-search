@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>统计 - DN42 Search</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="results-page">
+    <header class="results-header">
+        <div class="header-inner">
+            <a href="/" class="mini-logo">
+                <span class="logo-dn42">DN42</span><span class="logo-search">Search</span>
+            </a>
+            <nav class="header-nav">
+                <a href="/about">关于</a>
+                <a href="/stats" class="active">统计</a>
+            </nav>
+        </div>
+    </header>
+    
+    <main class="results-main">
+        <div class="results-container">
+            <h1 class="page-title">搜索引擎统计</h1>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">{{ stats.index.total_docs if stats.index_loaded else stats.database.total_docs }}</div>
+                    <div class="stat-label">索引文档数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">{{ stats.index.vocabulary_size if stats.index_loaded else 0 }}</div>
+                    <div class="stat-label">词项数量</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">{{ stats.pages_crawled }}</div>
+                    <div class="stat-label">已抓取页面</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">{{ stats.links.total }}</div>
+                    <div class="stat-label">链接数量</div>
+                </div>
+            </div>
+            
+            {% if stats.index_loaded %}
+            <section class="about-section">
+                <h2>索引详情</h2>
+                <table class="stats-table">
+                    <tr>
+                        <td>平均文档长度</td>
+                        <td>{{ "%.1f"|format(stats.index.avg_doc_length) }} 词</td>
+                    </tr>
+                    <tr>
+                        <td>每文档平均词项数</td>
+                        <td>{{ "%.1f"|format(stats.index.avg_terms_per_doc) }}</td>
+                    </tr>
+                    <tr>
+                        <td>倒排列表总项数</td>
+                        <td>{{ stats.index.total_postings }}</td>
+                    </tr>
+                </table>
+            </section>
+            {% endif %}
+            
+            <section class="about-section">
+                <h2>PageRank Top 20 页面</h2>
+                <table class="rank-table">
+                    <thead>
+                        <tr>
+                            <th>排名</th>
+                            <th>页面</th>
+                            <th>PageRank</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for page in top_pages %}
+                        <tr>
+                            <td class="rank-num">{{ loop.index }}</td>
+                            <td>
+                                <a href="{{ page.url }}" target="_blank">
+                                    {{ page.title or page.url }}
+                                </a>
+                                <div class="rank-url">{{ page.url }}</div>
+                            </td>
+                            <td class="rank-value">{{ "%.6f"|format(page.pagerank) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </main>
+</body>
+</html>

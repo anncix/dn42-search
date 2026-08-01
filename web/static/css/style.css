@@ -1,0 +1,621 @@
+/* ========== 全局样式 ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 
+                 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+    color: #333;
+    background: #fff;
+    line-height: 1.6;
+}
+
+a {
+    color: #1a73e8;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* ========== 首页样式 ========== */
+.home-page {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.home-container {
+    text-align: center;
+    padding: 40px 20px;
+    max-width: 800px;
+    width: 100%;
+}
+
+.logo-section {
+    margin-bottom: 40px;
+}
+
+.logo {
+    font-size: 64px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+.logo-dn42 {
+    color: #fff;
+}
+
+.logo-search {
+    color: #ffd700;
+    margin-left: 5px;
+}
+
+.tagline {
+    color: rgba(255,255,255,0.9);
+    font-size: 20px;
+    font-weight: 300;
+}
+
+.search-section {
+    margin-bottom: 60px;
+}
+
+.search-form {
+    max-width: 600px;
+    margin: 0 auto 20px;
+}
+
+.search-box {
+    display: flex;
+    background: #fff;
+    border-radius: 50px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    overflow: hidden;
+    transition: box-shadow 0.3s;
+}
+
+.search-box:focus-within {
+    box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+}
+
+.search-input {
+    flex: 1;
+    padding: 18px 30px;
+    font-size: 18px;
+    border: none;
+    outline: none;
+    background: transparent;
+}
+
+.search-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 30px;
+    background: #1a73e8;
+    color: #fff;
+    border: none;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.search-btn:hover {
+    background: #1557b0;
+}
+
+.quick-links {
+    margin-top: 20px;
+    color: rgba(255,255,255,0.8);
+    font-size: 14px;
+}
+
+.quick-label {
+    margin-right: 5px;
+}
+
+.quick-links a {
+    color: #fff;
+    margin: 0 8px;
+    padding: 4px 12px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 20px;
+    transition: background 0.3s;
+}
+
+.quick-links a:hover {
+    background: rgba(255,255,255,0.25);
+    text-decoration: none;
+}
+
+.footer {
+    color: rgba(255,255,255,0.7);
+    font-size: 14px;
+}
+
+.footer-links {
+    margin-bottom: 10px;
+}
+
+.footer-links a {
+    color: rgba(255,255,255,0.8);
+    margin: 0 15px;
+}
+
+.footer-links a:hover {
+    color: #fff;
+}
+
+/* ========== 搜索结果页样式 ========== */
+.results-header {
+    background: #fff;
+    border-bottom: 1px solid #e0e0e0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.mini-logo {
+    font-size: 24px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.mini-logo:hover {
+    text-decoration: none;
+}
+
+.mini-search-form {
+    flex: 1;
+    max-width: 600px;
+}
+
+.mini-search-box {
+    display: flex;
+    background: #f1f3f4;
+    border-radius: 25px;
+    overflow: hidden;
+    transition: background 0.3s;
+}
+
+.mini-search-box:focus-within {
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.mini-search-box .search-input {
+    flex: 1;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    outline: none;
+    background: transparent;
+}
+
+.search-btn-small {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    background: transparent;
+    border: none;
+    color: #5f6368;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.search-btn-small:hover {
+    color: #1a73e8;
+}
+
+.header-nav {
+    display: flex;
+    gap: 20px;
+}
+
+.header-nav a {
+    color: #5f6368;
+    font-size: 14px;
+}
+
+.header-nav a:hover,
+.header-nav a.active {
+    color: #1a73e8;
+    text-decoration: none;
+}
+
+.results-main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: calc(100vh - 120px);
+}
+
+.results-container {
+    max-width: 800px;
+}
+
+.spell-suggestion {
+    padding: 12px 16px;
+    background: #fff8e1;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 15px;
+}
+
+.spell-suggestion a {
+    font-weight: 500;
+}
+
+.original-query {
+    color: #666;
+    font-size: 13px;
+    margin-left: 10px;
+}
+
+.results-stats {
+    color: #70757a;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.sort-options {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 14px;
+    color: #5f6368;
+}
+
+.sort-options a {
+    color: #5f6368;
+    padding: 4px 12px;
+    border-radius: 16px;
+    transition: all 0.2s;
+}
+
+.sort-options a:hover {
+    background: #f1f3f4;
+    text-decoration: none;
+}
+
+.sort-options a.active {
+    background: #e8f0fe;
+    color: #1a73e8;
+    font-weight: 500;
+}
+
+.search-results {
+    margin-bottom: 30px;
+}
+
+.result-item {
+    padding: 15px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.result-item:last-child {
+    border-bottom: none;
+}
+
+.result-title {
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.result-title a {
+    color: #1a0dab;
+}
+
+.result-title a:hover {
+    text-decoration: underline;
+}
+
+.result-title em {
+    font-style: normal;
+    color: #d93025;
+    font-weight: 600;
+}
+
+.result-url {
+    color: #006621;
+    font-size: 14px;
+    margin-bottom: 6px;
+    word-break: break-all;
+}
+
+.result-snippet {
+    color: #4d5156;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.result-snippet em {
+    font-style: normal;
+    color: #d93025;
+    font-weight: 500;
+}
+
+.result-meta {
+    margin-top: 8px;
+    display: flex;
+    gap: 10px;
+}
+
+.score-badge,
+.pagerank-badge {
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: #f1f3f4;
+    color: #5f6368;
+}
+
+.pagerank-badge {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.no-results {
+    padding: 40px 20px;
+    text-align: center;
+    color: #5f6368;
+}
+
+.no-results h3 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.no-results ul {
+    text-align: left;
+    max-width: 400px;
+    margin: 20px auto;
+}
+
+.no-results li {
+    margin: 8px 0;
+}
+
+/* ========== 分页样式 ========== */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    padding: 20px 0;
+    flex-wrap: wrap;
+}
+
+.page-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 18px;
+    color: #5f6368;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.page-link:hover {
+    border-color: #1a73e8;
+    color: #1a73e8;
+    text-decoration: none;
+}
+
+.page-link.active {
+    background: #1a73e8;
+    border-color: #1a73e8;
+    color: #fff;
+}
+
+.page-ellipsis {
+    color: #999;
+    padding: 0 5px;
+}
+
+/* ========== 关于页面样式 ========== */
+.page-title {
+    font-size: 28px;
+    margin-bottom: 25px;
+    color: #202124;
+}
+
+.about-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+}
+
+.about-section h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #202124;
+}
+
+.about-section h3 {
+    font-size: 16px;
+    margin: 15px 0 8px;
+    color: #3c4043;
+}
+
+.about-section p {
+    margin-bottom: 12px;
+    color: #4d5156;
+}
+
+.about-section ul {
+    margin-left: 20px;
+    color: #4d5156;
+}
+
+.about-section li {
+    margin: 6px 0;
+}
+
+/* ========== 统计页面样式 ========== */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 25px;
+    text-align: center;
+    transition: box-shadow 0.3s;
+}
+
+.stat-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.stat-value {
+    font-size: 36px;
+    font-weight: 700;
+    color: #1a73e8;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    color: #5f6368;
+    font-size: 14px;
+}
+
+.stats-table,
+.rank-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.stats-table td {
+    padding: 10px 15px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.stats-table td:first-child {
+    color: #5f6368;
+    width: 200px;
+}
+
+.rank-table th {
+    text-align: left;
+    padding: 12px 15px;
+    background: #f1f3f4;
+    font-weight: 500;
+    color: #3c4043;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.rank-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.rank-num {
+    width: 60px;
+    font-weight: 600;
+    color: #1a73e8;
+}
+
+.rank-url {
+    font-size: 12px;
+    color: #999;
+    margin-top: 3px;
+}
+
+.rank-value {
+    font-family: 'SF Mono', Monaco, monospace;
+    color: #2e7d32;
+    font-weight: 500;
+}
+
+/* ========== 页脚样式 ========== */
+.results-footer {
+    text-align: center;
+    padding: 20px;
+    color: #999;
+    font-size: 13px;
+    border-top: 1px solid #e0e0e0;
+}
+
+/* ========== 响应式样式 ========== */
+@media (max-width: 768px) {
+    .logo {
+        font-size: 42px;
+    }
+    
+    .tagline {
+        font-size: 16px;
+    }
+    
+    .search-input {
+        padding: 14px 20px;
+        font-size: 16px;
+    }
+    
+    .search-btn {
+        padding: 0 20px;
+        font-size: 14px;
+    }
+    
+    .header-inner {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .mini-logo {
+        font-size: 20px;
+    }
+    
+    .mini-search-form {
+        order: 3;
+        width: 100%;
+        max-width: none;
+    }
+    
+    .result-title {
+        font-size: 18px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .stat-value {
+        font-size: 28px;
+    }
+}

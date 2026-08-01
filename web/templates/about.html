@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于 - DN42 Search</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="results-page">
+    <header class="results-header">
+        <div class="header-inner">
+            <a href="/" class="mini-logo">
+                <span class="logo-dn42">DN42</span><span class="logo-search">Search</span>
+            </a>
+            <nav class="header-nav">
+                <a href="/about" class="active">关于</a>
+                <a href="/stats">统计</a>
+            </nav>
+        </div>
+    </header>
+    
+    <main class="results-main">
+        <div class="results-container">
+            <h1 class="page-title">关于 DN42 Search</h1>
+            
+            <section class="about-section">
+                <h2>项目简介</h2>
+                <p>
+                    DN42 Search 是一个专为 <a href="https://wiki.dn42/" target="_blank">dn42 去中心化网络</a> 
+                    设计的开源搜索引擎。它借鉴了 Google 等主流搜索引擎的核心技术架构，
+                    包括网络爬虫、倒排索引、BM25 排序算法和 PageRank 链接分析。
+                </p>
+            </section>
+            
+            <section class="about-section">
+                <h2>技术架构</h2>
+                
+                <h3>1. 网络爬虫 (Web Crawler)</h3>
+                <ul>
+                    <li>基于 asyncio + aiohttp 的异步并发爬虫</li>
+                    <li>URL Frontier 双队列架构（优先级队列 + 每主机礼貌队列）</li>
+                    <li>支持 robots.txt 协议和爬取延迟控制</li>
+                    <li>内容去重（SHA-256 哈希）和 URL 去重</li>
+                    <li>严格限制爬取范围为 dn42 网络（172.20.0.0/14, fd00::/8, *.dn42）</li>
+                </ul>
+                
+                <h3>2. 倒排索引 (Inverted Index)</h3>
+                <ul>
+                    <li>自研倒排索引引擎，支持内存和磁盘持久化</li>
+                    <li>可变字节编码（Variable Byte Encoding）压缩倒排列表</li>
+                    <li>多字段索引（标题、URL、正文、标题标签）</li>
+                    <li>支持字段权重配置</li>
+                </ul>
+                
+                <h3>3. 排序算法 (Ranking)</h3>
+                <ul>
+                    <li><strong>BM25</strong>：概率检索模型，考虑词频饱和和文档长度归一化</li>
+                    <li><strong>PageRank</strong>：基于链接图的权威度计算，使用幂迭代法求解</li>
+                    <li><strong>混合排序</strong>：综合相关性得分和权威度得分</li>
+                </ul>
+                
+                <h3>4. 查询处理 (Query Processing)</h3>
+                <ul>
+                    <li>拼写检查与自动修正（基于编辑距离 + 语言模型）</li>
+                    <li>查询意图分类（导航型/信息型/事务型）</li>
+                    <li>支持高级搜索语法（site:, title: 等）</li>
+                </ul>
+            </section>
+            
+            <section class="about-section">
+                <h2>DN42 网络</h2>
+                <p>
+                    dn42（Decentralized Network 42）是一个大型的动态 VPN 网络，
+                    采用真实互联网技术构建——包括 BGP 路由协议、whois 数据库、DNS 系统等。
+                    参与者通过网络隧道（WireGuard、OpenVPN 等）相互连接，
+                    并通过边界网关协议（BGP）交换路由信息。
+                </p>
+                <ul>
+                    <li><strong>规模</strong>：1500+ 自治系统，1700+ 路由前缀</li>
+                    <li><strong>IPv4</strong>：172.20.0.0/14</li>
+                    <li><strong>IPv6</strong>：fd00::/8 (ULA)</li>
+                    <li><strong>ASN</strong>：4242420000-4242429999</li>
+                </ul>
+            </section>
+            
+            <section class="about-section">
+                <h2>开源协议</h2>
+                <p>
+                    本项目采用 MIT 协议开源，欢迎贡献代码或提出建议。
+                </p>
+            </section>
+        </div>
+    </main>
+</body>
+</html>
